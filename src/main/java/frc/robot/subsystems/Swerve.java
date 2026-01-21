@@ -2,9 +2,7 @@ package frc.robot.subsystems;
 
 import static frc.robot.Constants.SwerveConstants;
 
-import com.ctre.phoenix6.configs.Pigeon2Configuration;
-import com.ctre.phoenix6.hardware.Pigeon2;
-import com.reduxrobotics.sensors.canandgyro.Canandgyro;
+import com.ctre.phoenix.sensors.PigeonIMU;
 import edu.wpi.first.math.VecBuilder;
 import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
@@ -25,16 +23,12 @@ import java.util.function.DoubleSupplier;
 public class Swerve extends SubsystemBase {
   public SwerveDrivePoseEstimator poseEstimator;
   public SwerveModule[] swerveMods;
-  public Pigeon2 gyro;
-  public Canandgyro canandgyro;
+  public PigeonIMU gyro;
 
   public Swerve() {
-    gyro = new Pigeon2(Constants.SwerveConstants.pigeonID);
-    gyro.getConfigurator().apply(new Pigeon2Configuration());
+    gyro = new PigeonIMU(Constants.SwerveConstants.pigeonID);
+    gyro.configFactoryDefault();
     gyro.setYaw(0);
-
-    canandgyro = new Canandgyro(0);
-    canandgyro.resetFactoryDefaults(0.35);
 
     swerveMods =
         new SwerveModule[] {
@@ -122,7 +116,7 @@ public class Swerve extends SubsystemBase {
   }
 
   public Rotation2d getGyroYaw() {
-    return canandgyro.getRotation2d();
+    return Rotation2d.fromDegrees(gyro.getYaw());
   }
 
   public void resetModulesToAbsolute() {
