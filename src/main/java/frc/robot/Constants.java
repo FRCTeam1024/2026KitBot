@@ -21,10 +21,6 @@ public final class Constants {
   public static final class SwerveConstants {
     public static final int pigeonID = 1;
 
-    /** Drive motor rotations per rotation of azimuth */
-    public static final double azimuthCouplingRatio =
-        50.0 / 14.0; // TODO: This must be set for specific module
-
     /* Drivetrain Constants */
     public static final double trackWidth =
         Units.inchesToMeters(21.75); // TODO: This must be tuned to specific robot
@@ -44,6 +40,9 @@ public final class Constants {
     /* Module Gear Ratios */
     public static final double driveGearRatio = 6.75;
     public static final double angleGearRatio = 150.0 / 7.0;
+
+    /** Drive motor rotations per rotation of azimuth */
+    public static final double azimuthCouplingRatio = 50.0 / 14.0;
 
     /* Motor Inverts */
 
@@ -121,7 +120,7 @@ public final class Constants {
       public static final int driveMotorID = 1;
       public static final int angleMotorID = 2;
       public static final int canCoderID = 3;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(56.162109);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(104.59);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -131,7 +130,7 @@ public final class Constants {
       public static final int driveMotorID = 11;
       public static final int angleMotorID = 12;
       public static final int canCoderID = 13;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(130.693359);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-126.211);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -141,7 +140,7 @@ public final class Constants {
       public static final int driveMotorID = 21;
       public static final int angleMotorID = 22;
       public static final int canCoderID = 23;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-121.201172);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-10.459);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -151,7 +150,7 @@ public final class Constants {
       public static final int driveMotorID = 31;
       public static final int angleMotorID = 32;
       public static final int canCoderID = 33;
-      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(-160.400391);
+      public static final Rotation2d angleOffset = Rotation2d.fromDegrees(5.889);
       public static final SwerveModuleConstants constants =
           new SwerveModuleConstants(driveMotorID, angleMotorID, canCoderID, angleOffset);
     }
@@ -176,5 +175,25 @@ public final class Constants {
     public static final TrapezoidProfile.Constraints kThetaControllerConstraints =
         new TrapezoidProfile.Constraints(
             kMaxAngularSpeedRadiansPerSecond, kMaxAngularSpeedRadiansPerSecondSquared);
+  }
+
+  public static final class FuelConstants {
+    // Motor controller IDs for Fuel Mechanism motors
+    public static final int FEEDER_MOTOR_ID = 6;
+    public static final int INTAKE_LAUNCHER_MOTOR_ID = 41;
+
+    // Current limit and nominal voltage for fuel mechanism motors.
+    public static final int FEEDER_MOTOR_CURRENT_LIMIT = 60;
+    public static final int LAUNCHER_MOTOR_CURRENT_LIMIT = 60;
+
+    // Voltage values for various fuel operations. These values may need to be tuned
+    // based on exact robot construction.
+    // See the Software Guide for tuning information
+    public static final double INTAKING_FEEDER_VOLTAGE = -12;
+    public static final double INTAKING_INTAKE_VOLTAGE = 10;
+    public static final double LAUNCHING_FEEDER_VOLTAGE = 9;
+    public static final double LAUNCHING_LAUNCHER_VOLTAGE = 10.6;
+    public static final double SPIN_UP_FEEDER_VOLTAGE = -6;
+    public static final double SPIN_UP_SECONDS = 1;
   }
 }
