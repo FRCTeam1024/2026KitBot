@@ -5,10 +5,10 @@ import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.ctre.phoenix6.signals.SensorDirectionValue;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.trajectory.TrapezoidProfile;
 import edu.wpi.first.math.util.Units;
+import frc.lib.util.SwerveDriveKinematicsUtils;
 import frc.lib.util.SwerveModuleConstants;
 
 public final class Constants {
@@ -24,20 +24,14 @@ public final class Constants {
     public static final int pigeonID = 1;
 
     /* Drivetrain Constants */
-    public static final double trackWidth =
-        Units.inchesToMeters(21.75); // TODO: This must be tuned to specific robot
-    public static final double wheelBase =
-        Units.inchesToMeters(21.75); // TODO: This must be tuned to specific robot
+    public static final double trackWidth = Units.inchesToMeters(21.75);
+    public static final double wheelBase = trackWidth;
     public static final double wheelCircumference = Units.inchesToMeters(4 * Math.PI);
 
     /* Swerve Kinematics
      * No need to ever change this unless you are not doing a traditional rectangular/square 4 module swerve */
     public static final SwerveDriveKinematics swerveKinematics =
-        new SwerveDriveKinematics(
-            new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0));
+        SwerveDriveKinematicsUtils.fromWheelBases(wheelBase, trackWidth);
 
     /* Module Gear Ratios */
     public static final double driveGearRatio = 6.75;
