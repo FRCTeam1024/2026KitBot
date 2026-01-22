@@ -18,8 +18,9 @@ import com.revrobotics.spark.config.SparkMaxConfig;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import monologue.Logged;
 
-public class FuelSubsystem extends SubsystemBase {
+public class FuelSubsystem extends SubsystemBase implements Logged {
   private final SparkMax feederRoller;
   private final TalonFX intakeLauncherRoller;
   // Voltage control request for TalonFX so we can send voltages directly
@@ -113,10 +114,8 @@ public class FuelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("feeder output", feederRoller.getAppliedOutput());
-    SmartDashboard.putNumber("feeder bus voltage", feederRoller.getBusVoltage());
-    SmartDashboard.putNumber("feeder current", feederRoller.getOutputCurrent());
-
-    // This method will be called once per scheduler run
+    log("FeederAppliedOutput", feederRoller.getAppliedOutput());
+    log("FeederBusVoltage", feederRoller.getBusVoltage());
+    log("FeederCurrent", feederRoller.getOutputCurrent());
   }
 }
