@@ -16,6 +16,8 @@ public final class Constants {
   public static final class ControlConstants {
     public static final int driverPort = 0;
     public static final double stickDeadband = 0.04;
+
+    public static final int operatorPort = 1;
   }
 
   public static final class SwerveConstants {
@@ -179,7 +181,7 @@ public final class Constants {
 
   public static final class FuelConstants {
     // Motor controller IDs for Fuel Mechanism motors
-    public static final int FEEDER_MOTOR_ID = 6;
+    public static final int FEEDER_MOTOR_ID = 42;
     public static final int INTAKE_LAUNCHER_MOTOR_ID = 41;
 
     // Current limit and nominal voltage for fuel mechanism motors.

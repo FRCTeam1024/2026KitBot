@@ -5,8 +5,8 @@ import static frc.robot.Constants.*;
 
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.Commands;
-import edu.wpi.first.wpilibj2.command.InstantCommand;
 import edu.wpi.first.wpilibj2.command.button.CommandXboxController;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import frc.robot.subsystems.*;
 
 /**
@@ -20,13 +20,16 @@ public class RobotContainer {
   private final CommandXboxController driver =
       new CommandXboxController(ControlConstants.driverPort);
 
+  private final CommandXboxController operator =
+      new CommandXboxController(ControlConstants.operatorPort);
   /* Subsystems */
-  private final Swerve s_Swerve = new Swerve();
+  private final Swerve swerve = new Swerve();
+  private final FuelSubsystem fuelSubsystem = new FuelSubsystem();
 
   /** The container for the robot. Contains subsystems, OI devices, and commands. */
   public RobotContainer() {
-    s_Swerve.setDefaultCommand(
-        s_Swerve.driveFieldRelativeCmd(
+    swerve.setDefaultCommand(
+        swerve.driveFieldRelativeCmd(
             () -> applyDeadband(-driver.getLeftY(), ControlConstants.stickDeadband),
             () -> applyDeadband(-driver.getLeftX(), ControlConstants.stickDeadband),
             () -> applyDeadband(-driver.getRightX(), ControlConstants.stickDeadband)));
@@ -46,7 +49,27 @@ public class RobotContainer {
    */
   private void configureBindings() {
     /* Driver Buttons */
-    driver.x().onTrue(new InstantCommand(() -> s_Swerve.zeroHeading()));
+    driver.y().onTrue(Commands.runOnce(() -> swerve.zeroHeading()).ignoringDisable(true));
+
+    // While the left bumper on operator controller is held, intake Fuel
+    operator
+        .leftBumper()
+        .whileTrue(fuelSubsystem.runEnd(() -> fuelSubsystem.intake(), () -> fuelSubsystem.stop()));
+    // While the right bumper on the operator controller is held, spin up for 1
+    // second, then launch fuel. When the button is released, stop.
+    operator
+        .rightBumper()
+        .whileTrue(
+            fuelSubsystem
+                .spinUpCommand()
+                .withTimeout(Constants.FuelConstants.SPIN_UP_SECONDS)
+                .andThen(fuelSubsystem.launchCommand())
+                .finallyDo(() -> fuelSubsystem.stop()));
+    // While the A button is held on the operator controller, eject fuel back out
+    // the intake
+    operator
+        .a()
+        .whileTrue(fuelSubsystem.runEnd(() -> fuelSubsystem.eject(), () -> fuelSubsystem.stop()));
   }
 
   /**

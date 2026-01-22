@@ -19,17 +19,17 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-public class CANFuelSubsystem extends SubsystemBase {
+public class FuelSubsystem extends SubsystemBase {
   private final SparkMax feederRoller;
   private final TalonFX intakeLauncherRoller;
   // Voltage control request for TalonFX so we can send voltages directly
   private final VoltageOut launcherVoltageRequest = new VoltageOut(0);
 
   /** Creates a new CANBallSubsystem. */
-  public CANFuelSubsystem() {
+  public FuelSubsystem() {
     // create brushed motors for each of the motors on the launcher mechanism
     intakeLauncherRoller = new TalonFX(INTAKE_LAUNCHER_MOTOR_ID);
-    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushed);
+    feederRoller = new SparkMax(FEEDER_MOTOR_ID, MotorType.kBrushless);
 
     // put default values for various fuel operations onto the dashboard
     // all methods in this subsystem pull their values from the dashbaord to allow
@@ -45,6 +45,7 @@ public class CANFuelSubsystem extends SubsystemBase {
     // the config to the controller
     SparkMaxConfig feederConfig = new SparkMaxConfig();
     feederConfig.smartCurrentLimit(FEEDER_MOTOR_CURRENT_LIMIT);
+    feederConfig.inverted(true);
     feederRoller.configure(
         feederConfig, ResetMode.kResetSafeParameters, PersistMode.kPersistParameters);
 
@@ -60,31 +61,24 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   // A method to set the rollers to values for intaking
   public void intake() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber("Intaking feeder roller value", INTAKING_FEEDER_VOLTAGE));
-    double volts =
-        SmartDashboard.getNumber("Intaking intake roller value", INTAKING_INTAKE_VOLTAGE);
-    launcherVoltageRequest.Output = volts;
+    feederRoller.setVoltage(INTAKING_FEEDER_VOLTAGE);
+    launcherVoltageRequest.Output = INTAKING_INTAKE_VOLTAGE;
     intakeLauncherRoller.setControl(launcherVoltageRequest);
   }
 
   // A method to set the rollers to values for ejecting fuel out the intake. Uses
   // the same values as intaking, but in the opposite direction.
   public void eject() {
-    feederRoller.setVoltage(
-        -1 * SmartDashboard.getNumber("Intaking feeder roller value", INTAKING_FEEDER_VOLTAGE));
-    double volts =
-        -1 * SmartDashboard.getNumber("Intaking launcher roller value", INTAKING_INTAKE_VOLTAGE);
+    feederRoller.setVoltage(-INTAKING_FEEDER_VOLTAGE);
+    double volts = -INTAKING_INTAKE_VOLTAGE;
     launcherVoltageRequest.Output = volts;
     intakeLauncherRoller.setControl(launcherVoltageRequest);
   }
 
   // A method to set the rollers to values for launching.
   public void launch() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber("Launching feeder roller value", LAUNCHING_FEEDER_VOLTAGE));
-    double volts =
-        SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
+    feederRoller.setVoltage(LAUNCHING_FEEDER_VOLTAGE);
+    double volts = LAUNCHING_LAUNCHER_VOLTAGE;
     launcherVoltageRequest.Output = volts;
     intakeLauncherRoller.setControl(launcherVoltageRequest);
   }
@@ -99,10 +93,8 @@ public class CANFuelSubsystem extends SubsystemBase {
   // A method to spin up the launcher roller while spinning the feeder roller to
   // push Fuel away from the launcher
   public void spinUp() {
-    feederRoller.setVoltage(
-        SmartDashboard.getNumber("Spin-up feeder roller value", SPIN_UP_FEEDER_VOLTAGE));
-    double volts =
-        SmartDashboard.getNumber("Launching launcher roller value", LAUNCHING_LAUNCHER_VOLTAGE);
+    feederRoller.setVoltage(SPIN_UP_FEEDER_VOLTAGE);
+    double volts = LAUNCHING_LAUNCHER_VOLTAGE;
     launcherVoltageRequest.Output = volts;
     intakeLauncherRoller.setControl(launcherVoltageRequest);
   }
@@ -121,6 +113,10 @@ public class CANFuelSubsystem extends SubsystemBase {
 
   @Override
   public void periodic() {
+    SmartDashboard.putNumber("feeder output", feederRoller.getAppliedOutput());
+    SmartDashboard.putNumber("feeder bus voltage", feederRoller.getBusVoltage());
+    SmartDashboard.putNumber("feeder current", feederRoller.getOutputCurrent());
+
     // This method will be called once per scheduler run
   }
 }
